@@ -1,0 +1,144 @@
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+
+HTML {
+  color:#F6EFD9;
+  overflow-x: hidden;
+}
+
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+
+.primary {
+  position: fixed;
+  font-family: 'Readex Pro', sans-serif;
+  width:65%; 
+  top: 10px;
+  left: 17.5%; /* (100 - width) / 2*/
+  z-index: 1;
+}
+
+#display {
+  top:0px;
+  left:0px;
+  border: none;
+  position:absolute;
+  width:100%;
+  height:100%;
+  z-index: -1;
+}
+
+
+.navcontainer {
+  border-radius: 9px;
+  background-color: #fdbe3f;
+  margin: 0;
+  padding: 10px 10px;
+  height: 55px;
+  z-index: 1;
+  padding-bottom: 10px;
+}
+
+.navsection {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  font-size: 15px;
+  font-family: 'Readex Pro', sans-serif;
+}
+
+.primarynav {
+  width: 40%;
+}
+
+.primarynav>ul {
+  padding-left: 0;
+  display: inline-flex;
+  margin-bottom: 0;
+}
+
+.primarynav>ul>a {
+  text-decoration: none;
+  cursor:pointer;
+  text-align:center;
+  list-style: none;
+  padding: 20px;
+  transition: 0.3s color ease;
+  color:#F6EFD9;
+}
+
+.logocircle {
+  margin-right: -70px;
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  background: rgba(0, 0, 0, 0);
+} 
+
+.logocontainer {
+  cursor: pointer;
+  padding-top: 0px;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  display: inline-flex;
+  z-index: 2;
+}
+
+.logocontainer>img {
+  height: 70px;
+}
+
+.accountnav {
+  width:40%;
+}
+
+.accountnav>ul {
+  float:right;
+  padding-left: 0;
+  display: inline-flex;
+  margin-bottom: 0;
+}
+
+.accountnav>ul>a {
+  text-decoration: none;
+  cursor:pointer;
+  text-align:center;
+  list-style: none;
+  padding: 15px;
+  color:#F6EFD9;
+  transition: 0.3s color ease;
+}
