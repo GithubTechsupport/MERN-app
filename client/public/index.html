@@ -9,9 +9,13 @@
     <link href="https://db.onlinewebfonts.com/c/561f38b1f4570de0fb8a39d691ab058c?family=Tungsten-Bold" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      const defaultTheme = require('tailwindcss/defaultTheme')
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              "readex_pro": ['"Readex Pro"', 'sans-serif'] 
+            }
           }
         }
       }

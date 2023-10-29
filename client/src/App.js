@@ -19,6 +19,8 @@ import BoardAdmin from "./components/BoardAdmin";
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 import Faq from "./components/Faq";
+import Quizsite from "./components/Quizsite";
+import CreateQuiz from "./components/CreateQuiz";
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -30,9 +32,9 @@ const App = () => {
 
   useEffect(() => {
 
-    var t = gsap.to(".navcontainer", {duration: .25, backgroundColor:"#F6EFD9", ease:"none", paused:true, reversed:true});
-    var t2 = gsap.to(".headerbuttons", {duration: .1, color:"black", ease:"none", paused:true, reversed:true});
-    var t3 = gsap.to(".logocircle", {duration: .25, backgroundColor:"black", ease:"none", paused:true, reversed:true});
+    const t = gsap.to(".navcontainer", {duration: .25, backgroundColor:"#F6EFD9", ease:"none", paused:true, reversed:true});
+    const t2 = gsap.to(".headerbuttons", {duration: .1, color:"black", ease:"none", paused:true, reversed:true});
+    const t3 = gsap.to(".logocircle", {duration: .25, backgroundColor:"black", ease:"none", paused:true, reversed:true});
 
     const handleScroll = () => {
       const position = window.scrollY;
@@ -118,6 +120,8 @@ const App = () => {
         <Routes>
           <Route exact path={"/"} element={<Home />} />
           <Route exact path={"/home"} element={<Home />} />
+          <Route exact path={"/quiz"} element={<Quizsite />} />
+          <Route exact path={"/createquiz"} element={<CreateQuiz />} />
           <Route exact path={"/faq"} element={<Faq />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />

@@ -26,6 +26,7 @@ app.use(
 
 const db = require("./app/models");
 const Role = db.role;
+const Quiz = db.quiz;
 
 db.mongoose
   .connect('mongodb+srv://Jimmy:Aryan123@cluster0.a06hdym.mongodb.net/?retryWrites=true&w=majority', {
@@ -76,8 +77,6 @@ function initial() {
         }).save().catch((err) => {
           console.log(err);
         })
-  
-          console.log("added 'admin' to roles collection");
       }
     }).catch((err) => console.log(err));
   }

@@ -18,11 +18,20 @@ const getAdminBoard = () => {
   return axios.get(API_URL + "admin");
 };
 
+const createQuiz = (title, questions, username) => {
+  return axios.post(API_URL + "create", {
+    title, questions, username
+  }).then((response) => {
+    console.log(response.data.message)
+  })
+}
+
 const UserService = {
   getPublicContent,
   getUserBoard,
   getModeratorBoard,
   getAdminBoard,
+  createQuiz,
 }
 
 export default UserService;
