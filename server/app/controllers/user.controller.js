@@ -26,7 +26,7 @@ exports.createQuiz = (req, res) => {
   })
 
   quiz.save().then((quiz) => {
-    User.findOne({ username: req.body.username }).exec().then((user) => {
+    User.findById(req.userId).exec().then((user) => {
       if (!user) {
         console.log("user not found")
         return res.status(404).send({ message: "User Not found." });

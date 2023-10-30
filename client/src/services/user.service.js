@@ -18,9 +18,9 @@ const getAdminBoard = () => {
   return axios.get(API_URL + "admin");
 };
 
-const createQuiz = (title, questions, username) => {
+const createQuiz = (title, questions) => {
   return axios.post(API_URL + "create", {
-    title, questions, username
+    title, questions
   }).then((response) => {
     console.log(response.data.message)
   })
