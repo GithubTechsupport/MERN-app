@@ -12,6 +12,8 @@ module.exports = function(app) {
 
   app.post("/api/test/create", [authJwt.verifyToken], controller.createQuiz);
 
+  app.get("/api/test/getQuiz", [authJwt.verifyToken], controller.getQuiz);
+
   app.get("/api/test/all", controller.allAccess);
 
   app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
