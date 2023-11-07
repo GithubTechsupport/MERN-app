@@ -66,6 +66,7 @@ exports.signin = (req, res) => {
     username: req.body.username,
   })
     .populate("roles", "-__v")
+    .populate("quizes")
     .exec().then((user) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
@@ -89,9 +90,14 @@ exports.signin = (req, res) => {
                               });
 
       var authorities = [];
+      var quizes = [];
 
       for (let i = 0; i < user.roles.length; i++) {
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+      }
+
+      for (let i = 0; i < user.quizes.length; i++) {
+        quizes.push(user.quizes[i]);
       }
 
       req.session.token = token;
@@ -101,6 +107,7 @@ exports.signin = (req, res) => {
         username: user.username,
         email: user.email,
         roles: authorities,
+        quizes: quizes
       });
       console.log(req.session.token)
     }).catch((err) => {

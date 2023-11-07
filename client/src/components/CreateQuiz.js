@@ -48,7 +48,6 @@ export default function CreateQuiz() {
 
   const handleQuizSubmission = (e) => {
     e.preventDefault()
-    
     UserService.createQuiz(title, [{question: question, right_answers: [rightanswer], answers: [answer1, answer2, answer3, answer4] }])
   }
 

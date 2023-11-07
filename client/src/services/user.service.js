@@ -18,10 +18,22 @@ const getAdminBoard = () => {
   return axios.get(API_URL + "admin");
 };
 
+const getQuiz = () => {
+  return axios.get(API_URL + "getQuiz")
+    .then((response) => {
+      if (response.data.quizes) {
+        var userInfo = JSON.parse(localStorage.getItem("user"));
+        userInfo.quizes = response.data.quizes;
+        localStorage.setItem("user", JSON.stringify(userInfo));
+      }
+    })
+};
+
 const createQuiz = (title, questions) => {
-  return axios.post(API_URL + "create", {
+  return axios.post(API_URL + "createQuiz", {
     title, questions
   }).then((response) => {
+    getQuiz()
     console.log(response.data.message)
   })
 }
@@ -32,6 +44,7 @@ const UserService = {
   getModeratorBoard,
   getAdminBoard,
   createQuiz,
+  getQuiz,
 }
 
 export default UserService;

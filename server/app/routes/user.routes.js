@@ -10,7 +10,7 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/test/create", [authJwt.verifyToken], controller.createQuiz);
+  app.post("/api/test/createQuiz", [authJwt.verifyToken], controller.createQuiz);
 
   app.get("/api/test/getQuiz", [authJwt.verifyToken], controller.getQuiz);
 

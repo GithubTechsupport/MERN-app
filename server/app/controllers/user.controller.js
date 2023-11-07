@@ -52,10 +52,15 @@ exports.createQuiz = (req, res) => {
 }
 
 exports.getQuiz = (req, res) => {
-  User.findById(req.userId).exec().then((user) => {
+  User.findById(req.userId)
+    .populate("quizes")
+    .exec().then((user) => {
     if (!user) {
       return res.status(404).send(( {message: 'User not found' }))
     }
-    
+
+    res.status(200).send({
+      quizes: user.quizes
+    });
   })
 }

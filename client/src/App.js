@@ -21,6 +21,9 @@ import EventBus from "./common/EventBus";
 import Faq from "./components/Faq";
 import Quizsite from "./components/Quizsite";
 import CreateQuiz from "./components/CreateQuiz";
+import Quizlobby from "./components/Quizlobby";
+import NoMatch from "./components/functionality/NoMatch";
+import Game from "./components/game/Game";
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -126,9 +129,9 @@ const App = () => {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser />} />
-          <Route path="/mod" element={<BoardModerator />} />
-          <Route path="/admin" element={<BoardAdmin />} />
+          <Route exact path={"/lobby"} element={<Quizlobby />} />
+          <Route path="/game/:id" element={<Game />} />
+          <Route path="*" element={<NoMatch />} />
         </Routes>
       </div>
 
