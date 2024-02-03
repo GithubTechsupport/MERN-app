@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: "session",
-    keys: ["COOKIE_SECRET"], // should use as secret environment variable
+    keys: [process.env.COOKIE_KEY], // should use as secret environment variable
     httpOnly: true
   })
 );
@@ -31,7 +32,7 @@ const Role = db.role;
 const Quiz = db.quiz;
 
 db.mongoose
-  .connect('mongodb+srv://Jimmy:Aryan123@cluster0.a06hdym.mongodb.net/?retryWrites=true&w=majority', {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
