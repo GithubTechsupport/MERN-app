@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
+import "./styling/createquiz.css";
 
 import UserService from "../services/user.service";
 import AuthService from "../services/auth.service";
@@ -53,26 +54,28 @@ export default function CreateQuiz() {
 
   return (
     <>
-      <section className='bg-[#fdbe3f] w-screen h-[50vh] flex justify-center'>
-        <h1 className='text-[#F6EFD9] mt-[6.5%] font-["Tungsten-Bold"] lg:text-[80px]'>CREATE YOUR QUIZ</h1>
+      <section className='bg-[#FFAE1D] w-screen h-[40vh] flex justify-center'>
+        <h1 className='text-[#F6EFD9] mt-[4%] font-["Tungsten-Bold"] lg:text-[80px]'>CREATE YOUR QUIZ</h1>
       </section>  
-      <section className='bg-black w-screen h-[100vh] mt-[-20vh]'>
+      <section className='bg-[#170703] w-screen h-[100vh] mt-[-20vh] flex justify-center font-["readex_pro"]'>
         <Form onSubmit={handleQuizSubmission} ref={form}>
-        <label className='text-white'>Title: </label>
-          <Input type="text" name="title" value={title} onChange={onChangeTitle} required/>
-          <label className='text-white'>Question: </label>
-          <Input type="text" name="title" value={question} onChange={onChangeQuestion} required/>
-          <label className='text-white'>Answers: </label>
-          <Input type="text" name="answer1" value={answer1} onChange={onChangeAnswer1}/>
-          <Input type="text" name="answer2" value={answer2} onChange={onChangeAnswer2}/>
-          <Input type="text" name="answer3" value={answer3} onChange={onChangeAnswer3}/>
-          <Input type="text" name="answer4" value={answer4} onChange={onChangeAnswer4}/>
-          <select value={rightanswer} onChange={(e) => setRightanswer(e.target.value)}>
-            <option value={answer1}>{answer1}</option>
-            <option value={answer2}>{answer2}</option>
-            <option value={answer3}>{answer3}</option>
-            <option value={answer4}>{answer4}</option>
-          </select>
+          <Input className='mb-[5vh] mt-[5vh] w-[50vw] h-[50px] bg-[#F6EFD9] outline-none rounded-2xl text-center text-[30px] text-[#250e11]' placeholder="TITLE" type="text" name="title" value={title} onChange={onChangeTitle} required/>
+          <div className='w-[960px] min-h-[230px] rounded-[15px] bg-[#e1c79b] mb-[46.95px]'>
+            <Input type="text" name="title" value={question} placeholder="QUESTION" className="rounded-[10px] outline-none m-[30px] w-[900px] text-center bg-[#F6EFD9] h-[42.5px]" onChange={onChangeQuestion} required/>
+            <table className="mx-[30px] w-[900px] mb-[30px]">
+              <tr>
+                <td><Input placeholder="ANSWER 1" className="pl-[10px] rounded-[10px] outline-none w-[100%] bg-[#F6EFD9] h-[42.5px]" type="text" name="answer1" value={answer1} onChange={onChangeAnswer1}/></td>
+                <td><Input placeholder="ANSWER 2" className="pl-[10px] rounded-[10px] outline-none w-[100%] bg-[#F6EFD9] h-[42.5px]" type="text" name="answer2" value={answer2} onChange={onChangeAnswer2}/></td>
+              </tr>
+              <tr>
+                <td><Input placeholder="ANSWER 3" className="pl-[10px] rounded-[10px] outline-none w-[100%] bg-[#F6EFD9] h-[42.5px]" type="text" name="answer3" value={answer3} onChange={onChangeAnswer3}/></td>
+                <td><Input placeholder="ANSWER 4" className="pl-[10px] rounded-[10px] outline-none w-[100%] bg-[#F6EFD9] h-[42.5px]" type="text" name="answer4" value={answer4} onChange={onChangeAnswer4}/></td>
+              </tr>
+            </table>
+          </div>  
+          <div className='w-[960px] min-h-[100px] rounded-[15px] mb-[46.95px] flex text-center items-center justify-center border-solid border-2 border-[#e1c79b] cursor-pointer text-[#e1c79b] ease-in duration-100 hover:bg-[#e1c79b] hover:text-[#170703]'>
+            <h1 className="text-[100px]">+</h1>
+          </div>
           <button className="text-white">Add Quiz</button>
         </Form>
       </section>
