@@ -12,6 +12,10 @@ module.exports = function(app) {
 
   app.post("/api/test/createQuiz", [authJwt.verifyToken], controller.createQuiz);
 
+  app.post("/api/test/updateQuiz", [authJwt.verifyToken], controller.updateQuiz);
+
+  app.post("/api/test/deleteQuiz", [authJwt.verifyToken], controller.deleteQuiz);
+
   app.get("/api/test/getQuiz", [authJwt.verifyToken], controller.getQuiz);
 
   app.get("/api/test/all", controller.allAccess);

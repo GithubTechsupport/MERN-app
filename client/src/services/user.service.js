@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const API_URL = "http://localhost:3000/api/test/";
 
 const getPublicContent = () => {
@@ -30,12 +31,24 @@ const getQuiz = () => {
 };
 
 const createQuiz = (title, questions) => {
-  return axios.post(API_URL + "createQuiz", {
-    title, questions
-  }).then((response) => {
-    getQuiz()
+  return axios.post(API_URL + "createQuiz", { title, questions }).then((response) => {
+    getQuiz();
+    console.log(response.data.message);
+  }).catch((err) => { console.log(err) })
+}
+
+const updateQuiz = (quizID, title, questions) => {
+  return axios.post(API_URL + "updateQuiz", { quizID, title, questions }).then((response) => {
+    getQuiz();
     console.log(response.data.message)
-  })
+  }).catch((err) => { console.log(err) })
+}
+
+const deleteQuiz = (quizID) => {
+  return axios.post(API_URL + "deleteQuiz", { quizID }).then((response) => {
+    getQuiz();
+    console.log(response.data.message);
+  }).catch((err) => {console.log(err)})
 }
 
 const UserService = {
@@ -45,6 +58,8 @@ const UserService = {
   getAdminBoard,
   createQuiz,
   getQuiz,
+  updateQuiz,
+  deleteQuiz,
 }
 
 export default UserService;

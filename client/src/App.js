@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { gsap } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logowhite from './images/forretningslogo.png';
@@ -24,6 +24,8 @@ import CreateQuiz from "./components/CreateQuiz";
 import Quizlobby from "./components/Quizlobby";
 import NoMatch from "./components/functionality/NoMatch";
 import Game from "./components/game/Game";
+import EditQuiz from "./components/EditQuiz";
+import ErrorBoundary from "./components/functionality/ErrorBoundary";
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -32,9 +34,21 @@ const App = () => {
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const [logo, setLogo] = useState(logowhite);
+  const [hasError, setHasError] = useState(false);
+
+  const { pathname } = useLocation()
+  const originalPathname = useRef(pathname)
 
   useEffect(() => {
+    if (pathname !== originalPathname.current) {
+      console.log(hasError);
+      if (hasError) {
+        setHasError(false);
+      }
+    }
+  }, [pathname])
 
+  useEffect(() => {
     const t = gsap.to(".navcontainer", {duration: .25, backgroundColor:"#F6EFD9", ease:"none", paused:true, reversed:true});
     const t2 = gsap.to(".headerbuttons", {duration: .1, color:"black", ease:"none", paused:true, reversed:true});
     const t3 = gsap.to(".logocircle", {duration: .25, backgroundColor:"black", ease:"none", paused:true, reversed:true});
@@ -59,13 +73,14 @@ const App = () => {
 
 
     const user = AuthService.getCurrentUser();
+    AuthService.refreshToken()
 
     if (user) {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
-
+    console.log()
     EventBus.on("logout", () => {
       logOut();
     });
@@ -120,6 +135,7 @@ const App = () => {
         </div>
     </header>
       <div>
+        <ErrorBoundary setHasError={setHasError} hasError={hasError}>
         <Routes>
           <Route exact path={"/"} element={<Home />} />
           <Route exact path={"/home"} element={<Home />} />
@@ -130,9 +146,11 @@ const App = () => {
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path={"/lobby"} element={<Quizlobby />} />
+          <Route exact path={"/editquiz"} element={<EditQuiz />} />
           <Route path="/game/:id" element={<Game />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
+        </ErrorBoundary>
       </div>
 
       {/* <AuthVerify logOut={logOut}/> */}

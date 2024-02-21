@@ -5,6 +5,7 @@ const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { jwtDecode } = require('jwt-decode');
 
 exports.signup = (req, res) => {
   const user = new User({
@@ -62,6 +63,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log(req.session)
   User.findOne({
     username: req.body.username,
   })
@@ -86,7 +88,15 @@ exports.signin = (req, res) => {
                               {
                                 algorithm: 'HS256',
                                 allowInsecureKeySizes: true,
-                                expiresIn: 86400, // 24 hours
+                                expiresIn: 21600, // 24 hours
+                              });
+
+      const refreshToken = jwt.sign({ id: user.id },
+                              config.refresh_secret,
+                              {
+                                algorithm: 'HS256',
+                                allowInsecureKeySizes: true,
+                                expiresIn: 7776000, // 90 days
                               });
 
       var authorities = [];
@@ -99,9 +109,9 @@ exports.signin = (req, res) => {
       for (let i = 0; i < user.quizes.length; i++) {
         quizes.push(user.quizes[i]);
       }
-
       req.session.token = token;
-
+      req.session.refreshToken = refreshToken;
+      console.log(req.session)
       res.status(200).send({
         id: user._id,
         username: user.username,
@@ -109,7 +119,6 @@ exports.signin = (req, res) => {
         roles: authorities,
         quizes: quizes
       });
-      console.log(req.session.token)
     }).catch((err) => {
       if (err) {
         console.log(err)
@@ -127,3 +136,42 @@ exports.signout = async (req, res) => {
     this.next(err);
   }
 };
+
+exports.refreshToken = async (req, res) => {
+  //check if access token is expired
+  const decodedToken = jwtDecode(req.session.token);
+  const currentDate = new Date();
+  if (decodedToken.exp * 1000 > currentDate.getTime()) {
+    return res.status(200).send({ message: "Token not expired" })
+  }
+
+  //take refresh token from user
+  const refreshToken = req.session.refreshToken;
+  
+  //send error if no/invalid token
+  if (!refreshToken) {
+    return res.status(401).send({ message: "No token provided!" });
+  }
+
+  //if all ok, create new access token, refresh token, and send to user
+  jwt.verify(refreshToken,
+    config.refresh_secret,
+    (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          message: "Unauthorized!",
+        });
+      }
+      req.session.token = null
+      const token = jwt.sign({ id: decoded.id },
+        config.secret,
+        {
+          algorithm: 'HS256',
+          allowInsecureKeySizes: true,
+          expiresIn: 21600, // 24 hours
+        });
+
+      req.session.token = token;
+      res.status(200).send({ message: "Token refreshed" })
+    });
+}
