@@ -36,11 +36,22 @@ const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
 
+const refreshToken = () => {
+  try {
+    return axios.post(API_URL + "refreshToken").then((res) => {
+      console.log(res.data.message);
+    });
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 const AuthService = {
   register,
   login,
   logout,
   getCurrentUser,
+  refreshToken,
 }
 
 export default AuthService;

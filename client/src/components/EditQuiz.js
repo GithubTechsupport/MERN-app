@@ -1,15 +1,19 @@
 import React, { useState, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
+import { useNavigate } from "react-router-dom";
 import "./styling/createquiz.css";
 
 import UserService from "../services/user.service";
+import AuthService from "../services/auth.service";
 
-export default function CreateQuiz() {
+export default function EditQuiz() {
   const form = useRef();
-  
-  const [title, setTitle] = useState("");
-  const [quiz, setQuiz] = useState([{question: "", answers: ["","","",""], right_answers: ["", "", "", ""]}]);
+  const quizID = useState(new URLSearchParams(window.location.search).get('quizID'))[0];
+  const userQuiz = AuthService.getCurrentUser().quizes.filter((element) => {return element._id == quizID})[0];
+  const [title, setTitle] = useState(userQuiz.title);
+  const [quiz, setQuiz] = useState(userQuiz.questions);
+  const navigate = useNavigate();
 
   const addQuestion = () => {
     var quizCopy = quiz.slice();
@@ -19,22 +23,30 @@ export default function CreateQuiz() {
 
   const deleteQuestion = (i) => {
     if (quiz.length == 1) {
-      return
+      return;
     }
     var quizCopy = quiz.slice();
     quizCopy.splice(i, 1);
-    setQuiz(quizCopy)
+    setQuiz(quizCopy);
   }
 
-  const handleQuizSubmission = (e) => {
-    e.preventDefault()
-    UserService.createQuiz(title, quiz)
+  const handleQuizSubmission = async (e) => {
+    e.preventDefault();
+    await UserService.updateQuiz(quizID, title, quiz);
+    navigate("/quiz");
+    window.location.reload();
+  }
+
+  const deleteQuiz = async () => {
+    await UserService.deleteQuiz(quizID);
+    navigate("/quiz");
+    window.location.reload();
   }
 
   return (
     <>
       <section className='bg-[#FFAE1D] w-screen desktop:h-[40vh] laptop:h-[42.5vh] flex justify-center'>
-        <h1 className='text-[#F6EFD9] mt-[4%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[65px]'>CREATE YOUR QUIZ</h1>
+        <h1 className='text-[#F6EFD9] mt-[4%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[65px]'>EDIT YOUR QUIZ</h1>
       </section>  
       <section className='bg-[#170703] w-screen min-h-[100%] mt-[-20vh] flex justify-center font-["readex_pro"]'>
         <Form onSubmit={handleQuizSubmission} ref={form}>
@@ -80,7 +92,8 @@ export default function CreateQuiz() {
           <button type="button" onClick={addQuestion} className='w-[960px] min-h-[100px] rounded-[15px] mb-[46.95px] flex text-center items-center justify-center border-solid border-2 border-[#e1c79b] cursor-pointer text-[#e1c79b] ease-in duration-100 hover:bg-[#e1c79b] hover:text-[#170703]'>
             <h1 className="text-[100px]">+</h1>
           </button>
-          <button className="text-white">Add Quiz</button>
+          <button className="text-white">Submit Changes</button>
+          <button type="button" className="text-[red] float-right" onClick={() => {deleteQuiz()}}>Delete Quiz</button>
         </Form>
       </section>
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Link } from "react-router-dom";
 import "./styling/quizsite.css";
 import $ from 'jquery';
@@ -7,29 +7,26 @@ import UserService from '../services/user.service';
 
 export default function Quizsite() {
     const currentUser = AuthService.getCurrentUser();
-
-    useEffect(() => {
-        if (currentUser) {
-            UserService.getQuiz();
-        }
-        const cardQuestionOnHover = () => {
-            console.log("hovering")
-            $('.card-question').animate({scrollLeft: 156}, 800); 
-        }
+    if (currentUser) {
+        UserService.getQuiz();
+    }
+    const cardQuestionOnHover = () => {
+        console.log("hovering")
+        $('.card-question').animate({scrollLeft: 156}, 800); 
+    }
     
-        const cardQuestionOffHover = () => {
-            console.log("off hovering")
-        }
+    const cardQuestionOffHover = () => {
+        console.log("off hovering")
+    }
 
-        $('.card-question').on( "mouseenter", cardQuestionOnHover ).on( "mouseleave", cardQuestionOffHover );
-    }, [])
+    $('.card-question').on( "mouseenter", cardQuestionOnHover ).on( "mouseleave", cardQuestionOffHover );
 
   return (
     <>
         <section className='bg-[#fdbe3f] w-screen h-[50vh] flex justify-center'>
-            <h1 className='text-[#F6EFD9] mt-[6.5%] font-["Tungsten-Bold"] lg:text-[80px]'>YOUR QUIZ</h1>
+            <h1 className='text-[#F6EFD9] mt-[6.5%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[70px]'>YOUR QUIZ</h1>
         </section>  
-        <section className='bg-black w-screen h-[100vh] mt-[-20vh] flex justify-center p-[10px]'>
+        <section className='bg-black w-screen h-[100vh] mt-[-20vh] flex flex-wrap justify-center p-[10px]'>
             <div className='question-card'>
                 <div className='card-title'>QUIZ ABOUT THE CAPITALS OF ALL THE COUNTRIES IN THE WORLD</div>
                 <div className='card-mid'>
@@ -55,7 +52,10 @@ export default function Quizsite() {
             {currentUser.quizes && 
               currentUser.quizes.map((quiz, index) => (
                 <div key={index} className='question-card'>
-                    <div className='card-title' key={index}>{quiz.title}</div>
+                    <div className='flex justify-between'>
+                        <div className='card-title' key={index}>{quiz.title}</div>
+                        <Link to={{pathname: "/editQuiz", search: `?quizID=${quiz._id}`}} className='cursor-pointer'>Edit</Link>
+                    </div>
                     <div className='card-mid'>
                         <div className='card-content'>
                             {quiz.questions.map((question, index2) => (
