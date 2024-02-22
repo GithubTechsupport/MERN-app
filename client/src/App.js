@@ -73,12 +73,12 @@ const App = () => {
 
 
     const user = AuthService.getCurrentUser();
-    AuthService.refreshToken()
 
     if (user) {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+      AuthService.refreshToken()
     }
     console.log()
     EventBus.on("logout", () => {
