@@ -63,7 +63,6 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  console.log(req.session)
   User.findOne({
     username: req.body.username,
   })
@@ -111,7 +110,6 @@ exports.signin = (req, res) => {
       }
       req.session.token = token;
       req.session.refreshToken = refreshToken;
-      console.log(req.session)
       res.status(200).send({
         id: user._id,
         username: user.username,
@@ -138,6 +136,9 @@ exports.signout = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
+  //check for access token
+  if (!req.session.token) {return res.status(404).send({ message: "No access token provided!" })}
+
   //check if access token is expired
   const decodedToken = jwtDecode(req.session.token);
   const currentDate = new Date();
@@ -148,10 +149,8 @@ exports.refreshToken = async (req, res) => {
   //take refresh token from user
   const refreshToken = req.session.refreshToken;
   
-  //send error if no/invalid token
-  if (!refreshToken) {
-    return res.status(401).send({ message: "No token provided!" });
-  }
+  //check for refresh token
+  if (!refreshToken) {return res.status(404).send({ message: "No refresh token provided!" })}
 
   //if all ok, create new access token, refresh token, and send to user
   jwt.verify(refreshToken,

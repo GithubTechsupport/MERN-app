@@ -5,6 +5,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
 import AuthService from "../services/auth.service";
+import { useSignin } from "./hooks/useSignin";
 
 const required = (value) => {
   if (!value) {
@@ -22,8 +23,7 @@ const Login = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const { signin, error, isLoading } = useSignin() 
 
   const navigate = useNavigate();
 
@@ -37,34 +37,15 @@ const Login = () => {
     setPassword(password);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    setMessage("");
-    setLoading(true);
-
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.login(username, password).then(
-        () => {
-          navigate("/profile");
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          setLoading(false);
-          setMessage(resMessage);
-        }
-      );
+      await signin(username, password)
+      
     } else {
-      setLoading(false);
+      return
     }
   };
 
@@ -103,18 +84,18 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
-              {loading && (
+            <button className="btn btn-primary btn-block" disabled={isLoading}>
+              {isLoading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
               <span>Login</span>
             </button>
           </div>
 
-          {message && (
+          {error && (
             <div className="form-group">
               <div className="alert alert-danger" role="alert">
-                {message}
+                {error}
               </div>
             </div>
           )}

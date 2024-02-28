@@ -40,7 +40,7 @@ const refreshToken = () => {
   try {
     return axios.post(API_URL + "refreshToken").then((res) => {
       console.log(res.data.message);
-    });
+    }).catch(err => console.log(err.response.data.message))
   } catch (err) {
     console.log(err)
   }
