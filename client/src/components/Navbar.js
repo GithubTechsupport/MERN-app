@@ -22,7 +22,6 @@ export default function Navbar() {
     t3 = gsap.to(".logocircle", {duration: .25, backgroundColor:"black", ease:"none", paused:true, reversed:true});  
 
   })
-  console.log(user)
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY
@@ -64,7 +63,7 @@ export default function Navbar() {
                         {user ? (
                         <>
                         <Link to={"/profile"} className="nav-link headerbuttons"><i className="fa-solid fa-user"></i> {user.username}</Link>
-                        <a href="/login" style={{color: "rgb(246, 239, 217)"}} className="nav-link headerbuttons" onClick={signout}> Log out</a>
+                        <Link to={"/login"} style={{color: "rgb(246, 239, 217)"}} className="nav-link headerbuttons" onClick={signout}> Log out</Link>
                         </>
                           ) : (
                         <>

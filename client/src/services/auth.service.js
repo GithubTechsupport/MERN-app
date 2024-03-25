@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/auth/";
+const API_URL = "https://7jp85kmx-3000.euw.devtunnels.ms/api/auth/";
 
 const register = (username, email, password) => {
   return axios.post(API_URL + "signup", {
@@ -37,13 +37,9 @@ const getCurrentUser = () => {
 };
 
 const refreshToken = () => {
-  try {
-    return axios.post(API_URL + "refreshToken").then((res) => {
-      console.log(res.data.message);
-    }).catch(err => console.log(err.response.data.message))
-  } catch (err) {
-    console.log(err)
-  }
+  return axios.post(API_URL + "refreshToken").then((res) => {
+    return res.data;
+  });
 }
 
 const AuthService = {

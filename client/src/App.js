@@ -34,9 +34,10 @@ const Profile = lazy(() => import("./components/Profile"))
 const Faq = lazy(() => import("./components/Faq"))
 const Quizsite = lazy(() => import("./components/Quizsite"))
 const CreateQuiz = lazy(() => import("./components/CreateQuiz"))
-const Quizlobby = lazy(() => import("./components/Quizlobby"))
+const GameSetup = lazy(() => import("./components/GameSetup"))
 const Game = lazy(() => import("./components/game/Game"))
 const EditQuiz = lazy(() => import("./components/EditQuiz"))
+const GameLobbyPlayer = lazy(() => import("./components/game/GameLobbyPlayer"))
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -63,7 +64,7 @@ const App = () => {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
-      AuthService.refreshToken()
+      AuthService.refreshToken();
     }
   }, []);
 
@@ -89,9 +90,10 @@ const App = () => {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/profile" element={<Profile />} />
-          <Route exact path={"/lobby"} element={<Quizlobby />} />
+          <Route exact path={"/setupgame"} element={<GameSetup />} />
           <Route exact path={"/editquiz"} element={<EditQuiz />} />
-          <Route path="/game/:id" element={<Game />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/lobby/:id" element={<GameLobbyPlayer />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
         </Suspense>

@@ -110,6 +110,7 @@ exports.signin = (req, res) => {
       }
       req.session.token = token;
       req.session.refreshToken = refreshToken;
+      res.cookie('token', 'hello', {domain: 'localhost', httpOnly: true, secure: true, maxAge: 100000, sameSite: 'None'})
       res.status(200).send({
         id: user._id,
         username: user.username,
@@ -131,7 +132,7 @@ exports.signout = async (req, res) => {
     req.session = null;
     return res.status(200).send({ message: "You've been signed out!" });
   } catch (err) {
-    this.next(err);
+    return res.status(520).send({ message: err });
   }
 };
 

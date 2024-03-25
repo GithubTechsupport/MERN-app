@@ -10,7 +10,8 @@ export default function Quizsite() {
     const { user } = useAuthContext()
     useEffect(() => {
     const update = async () => {
-        await getquiz()
+        await getquiz();
+        console.log(error);
       }
     update()
     }, [])
@@ -25,7 +26,8 @@ export default function Quizsite() {
     }
 
     $('.card-question').on( "mouseenter", cardQuestionOnHover ).on( "mouseleave", cardQuestionOffHover );
-  return (
+
+    return (
     <>
     {!isLoading ? (<>
                 <section className='bg-[#fdbe3f] w-screen h-[50vh] flex justify-center'>
@@ -54,8 +56,9 @@ export default function Quizsite() {
                         <div className='card-play-button'>Play</div>
                     </div>
                 </div>
-                {user ?
-                  user.quizes.map((quiz, index) => (
+                {user ? (
+                <>
+                  {user.quizes.map((quiz, index) => (
                     <div key={index} className='question-card'>
                         <div className='flex justify-between'>
                             <div className='card-title' key={index}>{quiz.title}</div>
@@ -70,10 +73,15 @@ export default function Quizsite() {
                         </div>
                         <div className='card-footer'>
                             <div className='card-q-count'>{quiz.questions.length} Question(s)</div>
-                            <Link to={{pathname: "/lobby", search: `?quizID=${quiz._id}`}} className='card-play-button'>Play</Link>
+                            <Link to={{pathname: "/setupgame", search: `?quizID=${quiz._id}`}} className='card-play-button'>Play</Link>
                         </div>
                     </div>
-                  )) : (
+                  ))}
+                    <Link to={"/createquiz"} style={{ textDecoration: 'none' }} className='w-[20%] h-[40%] m-[10px] p-[10px] rounded-[15px] flex text-center items-center justify-center border-solid border-2 border-[#e1c79b] cursor-pointer text-[#e1c79b] ease-in duration-100 hover:bg-[#e1c79b] hover:text-[#170703]'>
+                        <div className="text-[120px]">+</div>
+                    </Link>
+                </>
+                  ) : (
                     <>
                     <div className='text-white'>Sign in to view your Quizes</div>
                     </>
