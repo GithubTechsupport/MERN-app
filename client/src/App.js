@@ -43,7 +43,8 @@ const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(false); 
+  const [ongoingGame, setOngoingGame] = useState(Boolean(JSON.parse(localStorage.getItem("socketSessionData"))));
 
   const { pathname } = useLocation()
   const originalPathname = useRef(pathname)
@@ -51,6 +52,7 @@ const App = () => {
   useEffect(() => {
     if (pathname !== originalPathname.current) {
       console.log(hasError);
+      setOngoingGame(Boolean(JSON.parse(localStorage.getItem("socketSessionData"))))
       if (hasError) {
         setHasError(false);
       }
@@ -75,9 +77,19 @@ const App = () => {
     setCurrentUser(undefined);
   };
 
+  const leaveOngoingGame = () => {
+    localStorage.removeItem("socketSessionData");
+    setOngoingGame(false);
+  }
+
   return (
     <>
       <Navbar/>
+      {!ongoingGame ? (<></>) : (<div className="p-[3px] w-[20vw] h-[75px] bg-[yellow] fixed bottom-0 right-0 rounded-2xl">
+      <Link reloadDocument className='text-[15px]' to={{pathname: `/game`, search: `?role=host`}}>Ongoing game found! Click to join</Link>
+      <div className="text-[15px]">|</div>
+      <div className="text-[15px] cursor-pointer" onClick={leaveOngoingGame}>Click to leave</div>
+      </div>)}
       <div>
         <ErrorBoundary setHasError={setHasError} hasError={hasError}>
         <Suspense fallback={<h2>Loading...</h2>}>

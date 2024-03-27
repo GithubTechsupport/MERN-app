@@ -4,6 +4,7 @@ const Game = mongoose.model(
   "Game",
   new mongoose.Schema({
     created: {type: Date, default: Date.now},
+    expireAt: {type: Date, default: null},
     currentQuestion: {type: Number, default: -1},
     gameID: String,
     quiz: {

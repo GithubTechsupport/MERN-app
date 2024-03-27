@@ -10,7 +10,7 @@ const ShortUniqueID = require('short-unique-id');
 
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'https://7jp85kmx-3000.euw.devtunnels.ms',
+    origin: process.env.SOCKET_CORS_ORIGIN,
     credentials: true
   },
   pingTimeout: 1000,
@@ -173,7 +173,7 @@ socket.on("send_data", async (data) => {
       case 'host':
         if (socket.sessionID) {
           socket.gameID = data.sessionData.gameID; 
-          Game.findOne({host: socket.gameID}).exec().then((game) => {
+          Game.findOne({gameID: socket.gameID}).exec().then((game) => {
             if (!game) {
               socket.emit("exception", { message: "Game Not Found" });
               socket.disconnect();
@@ -184,10 +184,13 @@ socket.on("send_data", async (data) => {
               socket.disconnect();
               return;
             }
-            socket.join(socket.gameID);
-            io.to(socket.gameID).emit("count_players", io.sockets.adapter.rooms.get(socket.gameID).size);
-            console.log("User reconnected: ", socket.sessionID);
-            return; //Return host to preexisting game
+            game.expireAt = null
+            game.save().then((game) => {
+              socket.join(socket.gameID);
+              io.to(socket.gameID).emit("count_players", io.sockets.adapter.rooms.get(socket.gameID).size);
+              console.log("User reconnected: ", socket.sessionID);
+            }).catch(err => console.log(err))
+            return//Return host to preexisting game
           }).catch((err) => {socket.emit("exception", {message: err}); socket.disconnect(); return;})
           return;
         }
@@ -224,8 +227,11 @@ socket.on("send_data", async (data) => {
       case 'host': //Add an expiration timer to document in MongoDB
         Game.findOne({ host: socket.userID }).exec().then((game) => {
           if (!game) {return}
-          
-        })
+          const currentDate = new Date()
+          currentDate.setMinutes(currentDate.getMinutes() + 2)
+          game.expireAt = currentDate
+          game.save().catch(err => {console.log(err)})
+        }).catch(err => {console.log(err)})
         break
       case 'player': //Add expiration timer to sessiondata stored in localhost 
         break

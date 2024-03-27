@@ -5,7 +5,7 @@ import GameInstance from './GameInstance';
 import AuthService from '../../services/auth.service';
 
 
-const socket = io("https://7jp85kmx-3000.euw.devtunnels.ms", { withCredentials: true });
+const socket = io(process.env.REACT_APP_LOCALHOST, { withCredentials: true });
 
 export default function GameLobbyPlayer() {
     const [connectedPlayers, setConnectedPlayers] = useState(0);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import ShortUniqueID from 'short-unique-id';
 
@@ -7,6 +7,10 @@ export default function GameSetup() {
   var params = new URLSearchParams(search);
   var quizID = params.get('quizID');
   const uid = new ShortUniqueID();
+
+  useEffect(() => {
+    localStorage.removeItem("socketSessionData");
+  }, [])
 
   return (
     <>

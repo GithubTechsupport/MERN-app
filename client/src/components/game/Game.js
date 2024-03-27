@@ -15,11 +15,14 @@ export default function Game() {
     const [connectedPlayers, setConnectedPlayers] = useState(0);
     const [instance, setInstance] = useState(false);
     const [error, setError] = useState(undefined);
-    const [gameID, setGameID] = useState("");
+    const [gameID, setGameID] = useState(null);
 
     useEffect(() => {
       socket.on("exception", (exception) => {
         setError(exception.message)
+        if (exception.message === "Game Not Found") {
+          localStorage.removeItem("socketSessionData");
+        }
       })
       socket.on("connect_error", (err) => {
         if (err.message === "Invalid Access Token!") {
@@ -44,9 +47,13 @@ export default function Game() {
       socket.on("send_gameid", (data) => {
         setGameID(data);
       })
+      socket.on("store_session_data", (data) => {
+        localStorage.setItem("socketSessionData", JSON.stringify(data));
+      })
     }, [socket])
 
     useEffect(() => {
+      if (JSON.parse(localStorage.getItem("socketSessionData"))) {setGameID(JSON.parse(localStorage.getItem("socketSessionData")).gameID)}
       return () => {
         socket.disconnect()
       }
