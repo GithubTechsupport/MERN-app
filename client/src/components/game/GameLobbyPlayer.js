@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import io from "socket.io-client";
-import GameInstance from './GameInstance';
+import GameInstance from './InstanceHost';
 import AuthService from '../../services/auth.service';
 
 
@@ -18,7 +18,7 @@ export default function GameLobbyPlayer() {
         setError(exception.message)
       })
       socket.on("connect_error", (err) => {
-        if (err.message === "Invalid Access Token!") {
+        if (err.message === "Invalid Access Token!" || err.message === "Invalid Session Data!") {
           console.log("Failed once");
           AuthService.refreshToken().then((res) => {socket.connect();})
           .catch((err) => {
@@ -64,10 +64,10 @@ export default function GameLobbyPlayer() {
           return (
             <>
             <div className='position-relative mt-[6.5%] h-[80px]'>
-            <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Failure to connect with account</h1>
+            <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Failure to connect with account</h1>
             </div>
             <div className='position-relative mt-[6.5%] h-[80px]'>
-            <h1 onClick={tokenlessReconnection} className='cursor-pointer text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Reconnect without account?</h1>
+            <h1 onClick={tokenlessReconnection} className='cursor-pointer text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Reconnect without account?</h1>
             </div>
             </>
           );
@@ -75,7 +75,7 @@ export default function GameLobbyPlayer() {
             return (
               <>
               <div className='position-relative mt-[6.5%] h-[80px]'>
-              <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>{error}</h1>
+              <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>{error}</h1>
               </div>
               </>
             );
@@ -88,10 +88,10 @@ export default function GameLobbyPlayer() {
           <section className='bg-[#fdbe3f] w-screen h-screen absolute'>
           {!(error) ? (<>
           <div className='position-relative mt-[6.5%] h-[80px]'>
-          <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>GAME ID: {gameID}</h1>
+          <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>GAME ID: {gameID}</h1>
           </div>
           <div className='position-relative'>
-          <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>PLAYERS CONNECTED: {connectedPlayers}</h1>
+          <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>PLAYERS CONNECTED: {connectedPlayers}</h1>
           </div>
           </>) : (
             <>

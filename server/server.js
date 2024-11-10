@@ -118,8 +118,9 @@ io.use((socket, next) => {
 })
 
 io.on("connection", (socket) => {
+  socket.on("test_emission", (data) => {console.log(data.message)})
   socket.emit("request_data")
-socket.on("send_data", async (data) => {
+  socket.on("send_data", async (data) => {
     socket.role = data.role;
     if (data.sessionData) {socket.sessionID = data.sessionData.sessionID}
     console.log({...data, sessionID: socket.sessionID, userID: socket.userID});
@@ -136,6 +137,10 @@ socket.on("send_data", async (data) => {
         socket.gameID = data.gameID;
         if (socket.sessionID) {
           Game.findOne({gameID: socket.gameID}).populate("players").exec().then((game) => {
+            if (!game) {
+              socket.emit("exception", { message: "Invalid GameID!"});
+              return;
+            }
             for (const p of game.players) {
               if (p.sessionID === socket.sessionID) {
                 socket.join(socket.gameID);
@@ -154,17 +159,19 @@ socket.on("send_data", async (data) => {
           socket.disconnect();
           return;
         }
-      Game.findOne({gameID: socket.gameID}).exec().then((game) => {
-          if (!game) {
-            socket.emit("exception", { message: "Invalid GameID" });
-            socket.disconnect();
-            return;
-          }
+        Game.findOne({gameID: socket.gameID}).exec().then((game) => {
+            if (!game) {
+              socket.emit("exception", { message: "Invalid GameID" });
+              socket.disconnect();
+              return;
+            }
         socket.sessionID = socket.id;
           game.players.push({sessionID: socket.sessionID})
           game.save().then((game) => {
             socket.join(socket.gameID);
-            socket.emit("store_session_data", { sessionID: socket.sessionID, gameID: socket.gameID });
+            const expiryDate = new Date();
+            expiryDate.setMinutes(expiryDate.getMinutes() + 2);
+            socket.emit("store_session_data", { sessionID: socket.sessionID, gameID: socket.gameID, expireAt: expiryDate.getTime(), role: "player" });
             io.to(socket.gameID).emit("count_players", io.sockets.adapter.rooms.get(socket.gameID).size);
             console.log("User connected: ", socket.sessionID);
           })
@@ -172,7 +179,7 @@ socket.on("send_data", async (data) => {
         break
       case 'host':
         if (socket.sessionID) {
-          socket.gameID = data.sessionData.gameID; 
+          socket.gameID = data.sessionData.gameID;
           Game.findOne({gameID: socket.gameID}).exec().then((game) => {
             if (!game) {
               socket.emit("exception", { message: "Game Not Found" });
@@ -203,9 +210,12 @@ socket.on("send_data", async (data) => {
           gameID: socket.gameID,
         })
         newGame.save().then((game) => {
+          const expiryDate = new Date();
+          expiryDate.setMinutes(expiryDate.getMinutes() + 2);
           io.to(socket.gameID).emit("count_players", io.sockets.adapter.rooms.get(socket.gameID).size);
-          socket.emit("store_session_data", { sessionID: socket.id, gameID: socket.gameID });
+          socket.emit("store_session_data", { sessionID: socket.id, gameID: socket.gameID, expireAt: expiryDate.getTime(), role: "host" });
           socket.emit("send_gameid", socket.gameID);
+          socket.emit("send_state_data", {state: game.stateData.state});
           console.log("User connected: ", socket.sessionID);
         })
         break;

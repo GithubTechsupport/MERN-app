@@ -35,24 +35,25 @@ const Faq = lazy(() => import("./components/Faq"))
 const Quizsite = lazy(() => import("./components/Quizsite"))
 const CreateQuiz = lazy(() => import("./components/CreateQuiz"))
 const GameSetup = lazy(() => import("./components/GameSetup"))
-const Game = lazy(() => import("./components/game/Game"))
+const LobbyHost = lazy(() => import("./components/game/LobbyHost"))
 const EditQuiz = lazy(() => import("./components/EditQuiz"))
 const GameLobbyPlayer = lazy(() => import("./components/game/GameLobbyPlayer"))
+const InstanceHost = lazy(() => import("./components/game/InstanceHost"))
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
   const [hasError, setHasError] = useState(false); 
-  const [ongoingGame, setOngoingGame] = useState(Boolean(JSON.parse(localStorage.getItem("socketSessionData"))));
+  const [sessionData, setSessionData] = useState(JSON.parse(localStorage.getItem("socketSessionData")));
 
   const { pathname } = useLocation()
   const originalPathname = useRef(pathname)
 
   useEffect(() => {
     if (pathname !== originalPathname.current) {
-      console.log(hasError);
-      setOngoingGame(Boolean(JSON.parse(localStorage.getItem("socketSessionData"))))
+      console.log(pathname);
+      setSessionData(JSON.parse(localStorage.getItem("socketSessionData")));
       if (hasError) {
         setHasError(false);
       }
@@ -79,14 +80,37 @@ const App = () => {
 
   const leaveOngoingGame = () => {
     localStorage.removeItem("socketSessionData");
-    setOngoingGame(false);
+    setSessionData(null);
   }
+
+    const renderRejoinLink = () => {
+      switch(sessionData.role) {
+        case "player":
+          return (
+            <>
+              <Link reloadDocument className='text-[15px]' to={{pathname: `/lobby/${sessionData.gameID}`}}>Ongoing game as player found! Click to join</Link>
+            </>
+          );
+        case "host":
+            return (
+              <>
+                <Link reloadDocument className='text-[15px]' to={{pathname: `/lobbyhost`, search: `?role=host`}}>Ongoing game as host found! Click to join</Link>
+              </>
+            );
+        default:
+          return (
+            <>
+            <div>hello</div>
+            </>
+          )
+      }
+    }
 
   return (
     <>
       <Navbar/>
-      {!ongoingGame ? (<></>) : (<div className="p-[3px] w-[20vw] h-[75px] bg-[yellow] fixed bottom-0 right-0 rounded-2xl">
-      <Link reloadDocument className='text-[15px]' to={{pathname: `/game`, search: `?role=host`}}>Ongoing game found! Click to join</Link>
+      {!sessionData || pathname === "/instancehost" ? (<></>) : (<div className="p-[3px] w-[20vw] h-[75px] bg-[yellow] fixed bottom-0 right-0 rounded-2xl">
+      {renderRejoinLink()}
       <div className="text-[15px]">|</div>
       <div className="text-[15px] cursor-pointer" onClick={leaveOngoingGame}>Click to leave</div>
       </div>)}
@@ -104,8 +128,9 @@ const App = () => {
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path={"/setupgame"} element={<GameSetup />} />
           <Route exact path={"/editquiz"} element={<EditQuiz />} />
-          <Route path="/game" element={<Game />} />
+          <Route path="/lobbyhost" element={<LobbyHost />} />
           <Route path="/lobby/:id" element={<GameLobbyPlayer />} />
+          <Route path="/instancehost" element={<InstanceHost />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
         </Suspense>

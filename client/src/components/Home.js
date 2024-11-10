@@ -27,7 +27,13 @@ const Home = () => {
     <div id="background">
     <section id="introduction" className="flex flex-col place-items-center justify-center">
       <input placeholder="Enter GameID" onChange={(e) => {setGameID(e.target.value)}} value={gameID}></input>
-      <Link reloadDocument to={{pathname: `/lobby/${gameID}`}} className="text-white text-[75px] ">Join Game</Link>
+      <Link reloadDocument onClick={() => {
+        const sessionData = JSON.parse(localStorage.getItem("socketSessionData"));
+        if (sessionData != null && (sessionData.expireAt < new Date().getTime() || sessionData.gameID != gameID || sessionData.role === "host")) {
+          localStorage.removeItem("socketSessionData")
+          console.log("test")
+        }
+      }} to={{pathname: `/lobby/${gameID}`}} className="text-white text-[75px] ">Join Game</Link>
     </section>  
     <section id="information">
     </section>

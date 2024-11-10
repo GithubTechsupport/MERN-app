@@ -64,7 +64,7 @@ export default function CreateQuiz() {
   return (
     <>
       <section className='bg-[#FFAE1D] w-screen desktop:h-[40vh] laptop:h-[42.5vh] flex justify-center'>
-        <h1 className='text-[#F6EFD9] mt-[4%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[65px]'>CREATE YOUR QUIZ</h1>
+        <h1 className='text-[#F6EFD9] mt-[4%] font-Tungsten desktop:text-[80px] laptop:text-[65px]'>CREATE YOUR QUIZ</h1>
       </section>  
       <section className='bg-[#170703] w-screen min-h-[100%] mt-[-20vh] flex justify-center font-["readex_pro"]'>
         <Form onSubmit={handleQuizSubmission} ref={form}>

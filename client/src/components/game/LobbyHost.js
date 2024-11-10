@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import io from "socket.io-client";
-import GameInstance from './GameInstance';
+import GameInstance from './InstanceHost';
 import AuthService from '../../services/auth.service';
+import InstanceHost from './InstanceHost';
+import Transition from './Transition';
 
 
 const socket = io("https://7jp85kmx-3000.euw.devtunnels.ms", { withCredentials: true });
 
-export default function Game() {
+export default function LobbyHost() {
     const search = window.location.search
     const params = new URLSearchParams(search);
     const quizID = params.get('quizID');
     const role = params.get('role');
     const [connectedPlayers, setConnectedPlayers] = useState(0);
-    const [instance, setInstance] = useState(false);
+    const [state, setState] = useState(0);
+    const [stateData, setStateData] = useState({state: 0});
     const [error, setError] = useState(undefined);
     const [gameID, setGameID] = useState(null);
+
+    useEffect(() => {
+      setState(stateData.state);
+    }, [stateData])
 
     useEffect(() => {
       socket.on("exception", (exception) => {
@@ -47,10 +54,17 @@ export default function Game() {
       socket.on("send_gameid", (data) => {
         setGameID(data);
       })
+      socket.on("send_state_data", (data) => {
+        setStateData(data);
+      } )
       socket.on("store_session_data", (data) => {
         localStorage.setItem("socketSessionData", JSON.stringify(data));
       })
     }, [socket])
+
+    const test = (data) => {
+      socket.emit("test_emission", data);
+    }
 
     useEffect(() => {
       if (JSON.parse(localStorage.getItem("socketSessionData"))) {setGameID(JSON.parse(localStorage.getItem("socketSessionData")).gameID)}
@@ -60,7 +74,7 @@ export default function Game() {
     }, [])
 
     const start = () => {
-      setInstance(true);
+      socket.emit("start_game");
     }
 
     const tokenlessReconnection = () => {
@@ -77,10 +91,10 @@ export default function Game() {
           return (
             <>
             <div className='position-relative mt-[6.5%] h-[80px]'>
-            <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Failure to connect with account</h1>
+            <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Failure to connect with account</h1>
             </div>
             <div className='position-relative mt-[6.5%] h-[80px]'>
-            <h1 onClick={tokenlessReconnection} className='cursor-pointer text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Reconnect without account?</h1>
+            <h1 onClick={tokenlessReconnection} className='cursor-pointer text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>Reconnect without account?</h1>
             </div>
           </>
           );
@@ -88,37 +102,61 @@ export default function Game() {
             return (
               <>
               <div className='position-relative mt-[6.5%] h-[80px]'>
-              <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>{error}</h1>
+              <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>{error}</h1>
               </div>
               </>
             );
       }
     }
 
+    const renderLobby = () => {
+      return (
+        <>
+        <div className='position-relative mt-[6.5%] h-[80px]'>
+        <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh]'>GAME ID: {gameID}</h1>
+        </div>
+        <div className='position-relative'>
+        <h1 className='text-[#F6EFD9] font-Tungsten lg:text-[80px] h-[0vh]'>PLAYERS CONNECTED: {connectedPlayers}</h1>
+        </div>
+        <div className='position-relative mt-[6.5%] h-[80px]'>
+        <button onClick={start} className='cursor-pointer text-[#F6EFD9] font-Tungsten text-[60px] h-[0vh]'>PLAY</button>
+        </div>
+        </>
+      )
+    }
+
+    const renderState = (stateData) => {
+      switch(stateData.state) {
+        case 0:
+          return (
+            <>
+            {renderLobby()}
+            </>
+          );
+        case 1:
+          return (
+            <>
+            <InstanceHost data={stateData.data} test={test}/>
+            </>
+          );
+        case 2:
+          return (
+            <>
+            <Transition data={stateData.data}/>
+            </>
+          )
+      }
+    }
+
   return (
     <div>
-      {!instance ? (
-          <section className='bg-[#fdbe3f] w-screen h-screen absolute'>
-          {!(error) ? (<>
-          <div className='position-relative mt-[6.5%] h-[80px]'>
-          <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>GAME ID: {gameID}</h1>
-          </div>
-          <div className='position-relative'>
-          <h1 className='text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>PLAYERS CONNECTED: {connectedPlayers}</h1>
-          </div>
-          <div className='position-relative mt-[6.5%] h-[80px]'>
-          <h1 onClick={start} className='cursor-pointer text-[#F6EFD9] font-["Tungsten-Bold"] lg:text-[80px] h-[0vh] absolute -translate-x-1/2 -translate-y-1/2 left-1/2'>PLAY</h1>
-          </div>
-          </>) : (
-            <>
-            {renderError()}
-            </>
-          )}
-        </section>
-      ) : (
-        <GameInstance/>
-      )}
-
+        <section className='bg-[#fdbe3f] w-screen h-screen absolute grid place-items-center'>
+        {!(error) ? (<>{renderState({state: 2, data: {transitionDuration: 20}})}</>) : (
+          <>
+          {renderError()}
+          </>
+        )}
+      </section>
     </div>
   )
 }

@@ -38,8 +38,9 @@ const getCurrentUser = () => {
 
 const refreshToken = () => {
   return axios.post(API_URL + "refreshToken").then((res) => {
-    return res.data;
-  });
+    console.log(res.data);
+    return;
+  }).catch(err => {console.log(err)});
 }
 
 const AuthService = {

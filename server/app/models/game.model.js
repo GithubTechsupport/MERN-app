@@ -5,7 +5,6 @@ const Game = mongoose.model(
   new mongoose.Schema({
     created: {type: Date, default: Date.now},
     expireAt: {type: Date, default: null},
-    currentQuestion: {type: Number, default: -1},
     gameID: String,
     quiz: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,7 +17,10 @@ const Game = mongoose.model(
         points: {type: Number, default: 0},
       }
     ],
-    finished: {type: Boolean, default: false},
+    stateData: {
+      state: {type: Number, default: 0},
+      currentQuestion: {type: Number, default: 0},
+    },
   })
 );
 

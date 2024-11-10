@@ -15,7 +15,7 @@ export default function GameSetup() {
   return (
     <>
     <section className='bg-[#fdbe3f] w-screen h-[100vh] flex justify-center'>
-      <Link reloadDocument className='text-[#F6EFD9] mt-[6.5%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[70px] h-[0vh]' to={{pathname: `/game`, search: `?quizID=${quizID}&role=host`}}>Create lobby</Link>
+      <Link reloadDocument className='text-[#F6EFD9] mt-[6.5%] font-Tungsten desktop:text-[80px] laptop:text-[70px] h-[0vh]' to={{pathname: `/lobbyhost`, search: `?quizID=${quizID}&role=host`}}>Create lobby</Link>
     </section>  
     </>
   )

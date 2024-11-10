@@ -31,7 +31,7 @@ export default function Quizsite() {
     <>
     {!isLoading ? (<>
                 <section className='bg-[#fdbe3f] w-screen h-[50vh] flex justify-center'>
-                <h1 className='text-[#F6EFD9] mt-[6.5%] font-["Tungsten-Bold"] desktop:text-[80px] laptop:text-[70px]'>YOUR QUIZ</h1>
+                <h1 className='text-[#F6EFD9] mt-[6.5%] font-Tungsten desktop:text-[80px] laptop:text-[70px]'>YOUR QUIZ</h1>
             </section>  
             <section className='bg-black w-screen h-[100vh] mt-[-20vh] flex flex-wrap justify-center p-[10px]'>
                 <div className='question-card'>
